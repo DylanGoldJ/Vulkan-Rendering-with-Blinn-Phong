@@ -7,16 +7,24 @@
 #include "scene_graph/event.hpp"
 #include "scene_graph/node.hpp"
 #include "scene_graph/script.hpp"
+#include "scene_graph/scripts/light.hpp"
 
 namespace W3D
 {
 // Class that is responsible for dispatching events and answering collision queries
 
-Controller::Controller(sg::Node &camera_node, sg::Node &player_1_node, sg::Node &player_2_node) :
+Controller::Controller(sg::Node &camera_node, sg::Node &player_1_node, sg::Node &player_2_node, 
+	sg::Light &light_1_obj, sg::Light &light_2_obj, sg::Light &light_3_obj, sg::Light &light_4_obj) :
     camera_(camera_node),
     player_1(player_1_node),
-    player_2(player_2_node)
+    player_2(player_2_node),
+	//Added light objects.
+    light_1(light_1_obj),
+    light_2(light_2_obj),
+    light_3(light_3_obj),
+    light_4(light_4_obj)
 {
+
 }
 
 void Controller::process_event(const Event &event)
@@ -49,6 +57,22 @@ void Controller::switch_mode(KeyCode code)
 	{
 		mode_ = ControllerMode::ePlayer2;
 	}
+	else if (code == KeyCode::e4)
+	{
+		mode_ = ControllerMode::eLight1;
+	}
+	else if (code == KeyCode::e5)
+	{
+		mode_ = ControllerMode::eLight2;
+	}
+	else if (code == KeyCode::e6)
+	{
+		mode_ = ControllerMode::eLight3;
+	}
+	else if (code == KeyCode::e7)
+	{
+		mode_ = ControllerMode::eLight4;
+	}
 	// THE DEFAULT IS TO SWITCH CONTROL TO THE CAMERA
 	else
 	{
@@ -68,6 +92,26 @@ void Controller::deliver_event(const Event &event)
 	else if (mode_ == ControllerMode::ePlayer2)
 	{
 		p_script = &player_2.get_component<sg::Script>();
+	}
+	else if (mode_ == ControllerMode::eLight1)
+	{
+		light_1.process_event(event);
+		return;
+	}
+	else if (mode_ == ControllerMode::eLight2)
+	{
+		light_2.process_event(event);
+		return;
+	}
+	else if (mode_ == ControllerMode::eLight3)
+	{
+		light_3.process_event(event);
+		return;
+	}
+	else if (mode_ == ControllerMode::eLight4)
+	{
+		light_4.process_event(event);
+		return;
 	}
 	else
 	{

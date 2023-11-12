@@ -34,6 +34,7 @@
 #include "scene_graph/script.hpp"
 #include "scene_graph/scripts/free_camera.hpp"
 #include "scene_graph/scripts/player.hpp"
+#include "scene_graph/scripts/light.hpp"
 
 namespace W3D
 {
@@ -44,13 +45,25 @@ namespace W3D
 const uint32_t Renderer::NUM_INFLIGHT_FRAMES  = 2;
 const uint32_t Renderer::IRRADIANCE_DIMENSION = 2;
 const int      NUM_LIGHTS                     = 4;
-glm::vec3      LIGHT_POSITIONS[NUM_LIGHTS]    = {
-    glm::vec3(6.0f, 0.0f, 6.0f),
-    glm::vec3(-3.0f, 0.0f, 6.0f),
-    glm::vec3(0.0f, -6.0f, -6.0f),
-    glm::vec3(-6.0f, -6.0f, -6.0f),
-};
+//Creating the lights
+sg::Light  light_1     = sg::Light(glm::vec3(6.0f, 0.0f, 6.0f));
+sg::Light* light_1_ptr = &light_1;
 
+sg::Light  light_2     = sg::Light(glm::vec3(-3.0f, 0.0f, 6.0f));
+sg::Light *light_2_ptr = &light_2;
+
+sg::Light  light_3     = sg::Light(glm::vec3(0.0f, -6.0f, -6.0f));
+sg::Light *light_3_ptr = &light_3;
+
+sg::Light  light_4     = sg::Light(glm::vec3(-6.0f, -6.0f, -6.0f));
+sg::Light *light_4_ptr = &light_4;
+
+sg::Light*     LIGHT_POSITIONS[NUM_LIGHTS]    = {
+    light_1_ptr,
+	light_2_ptr,
+	light_3_ptr,
+	light_4_ptr
+};
 Renderer::Renderer()
 {
 	// CREATE OUR WINDOW AND SETUP THE EVENT HANDLERS
@@ -122,6 +135,12 @@ void Renderer::update()
 		// UPDATE THE SCENE OBJECT VIA ITS SCRIPT
 		p_script->update(delta_time);
 	}
+
+	//Go through all the lights
+	for (sg::Light *light : LIGHT_POSITIONS)
+	{
+		light->update(delta_time);
+	}
 }
 
 void Renderer::process_event(const Event &event)
@@ -147,7 +166,8 @@ void Renderer::load_scene(const char *scene_name)
 
 void Renderer::create_controller()
 {
-	p_controller_ = std::make_unique<Controller>(*p_camera_node_, add_player_script("player_1"), add_player_script("player_2"));
+	p_controller_ = std::make_unique<Controller>(*p_camera_node_, add_player_script("player_1"), add_player_script("player_2"),
+		*(LIGHT_POSITIONS[0]), *(LIGHT_POSITIONS[1]), *(LIGHT_POSITIONS[2]), *(LIGHT_POSITIONS[3]));
 }
 
 void Renderer::render_frame()
@@ -274,10 +294,11 @@ void Renderer::update_frame_ubo()
 	UBO ubo{
 	    .proj_view = proj_view,
 	    .lights    = {
-            glm::vec4(LIGHT_POSITIONS[0], 1.0f),
-            glm::vec4(LIGHT_POSITIONS[1], 1.0f),
-            glm::vec4(LIGHT_POSITIONS[2], 1.0f),
-            glm::vec4(LIGHT_POSITIONS[3], 1.0f),
+            // Modified now that LIGHT_POSITIONS is an array of Light*
+            glm::vec4(LIGHT_POSITIONS[0]->getLocation(), 1.0f),
+            glm::vec4(LIGHT_POSITIONS[1]->getLocation(), 1.0f),
+            glm::vec4(LIGHT_POSITIONS[2]->getLocation(), 1.0f),
+            glm::vec4(LIGHT_POSITIONS[3]->getLocation(), 1.0f),
         },
 	};
 
@@ -371,7 +392,8 @@ void Renderer::draw_lights(CommandBuffer &cmd_buf)
 	glm::mat4 scaled_m = glm::scale(glm::mat4(1.0f), glm::vec3(0.3f));
 	for (int i = 0; i < NUM_LIGHTS; i++)
 	{
-		glm::mat4 world_m = glm::translate(scaled_m, LIGHT_POSITIONS[i]);
+		//Modified now that LIGHT_POSITIONS is an array of Light*
+		glm::mat4 world_m = glm::translate(scaled_m, LIGHT_POSITIONS[i]->getLocation());
 
 		cmd_buf.get_handle().pushConstants<glm::mat4>(pl_layout, vk::ShaderStageFlagBits::eVertex, 0, world_m);
 
