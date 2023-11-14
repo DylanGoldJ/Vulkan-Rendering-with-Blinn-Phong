@@ -63,6 +63,9 @@ class Controller
 	*/
 	void process_event(const Event &event);
 
+	// Called when the R-key is pressed, it resets the locations of the players, lights, and camera back to its original position
+	void reset_locations(const Event &event);
+
 	/*
 	* This function changes the game object that is affected by interactions.
 	*/

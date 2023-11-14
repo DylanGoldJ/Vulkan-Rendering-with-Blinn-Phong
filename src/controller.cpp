@@ -33,16 +33,40 @@ void Controller::process_event(const Event &event)
 	if (event.type == EventType::eKeyInput)
 	{
 		const auto &key_input_event = static_cast<const KeyInputEvent &>(event);
+		
 		// NUMBER KEYS ARE ALL GREATER
-		if (key_input_event.code > KeyCode::eD)
+		if (key_input_event.code > KeyCode::eR)
 		{
 			switch_mode(key_input_event.code);
+			return;
+		}
+
+		// If event is the R-key we need to reset ALL objects
+		if (key_input_event.code == KeyCode::eR)
+		{
+			reset_locations(event);
 			return;
 		}
 	}
 
 	// DELIVER IT TO THE SCRIPT
 	deliver_event(event);
+}
+
+void Controller::reset_locations(const Event &event)
+{
+	sg::Script *p_script;
+	p_script = &player_1.get_component<sg::Script>();
+	p_script->process_event(event);
+	p_script = &player_2.get_component<sg::Script>();
+	p_script->process_event(event);
+	p_script = &camera_.get_component<sg::Script>();
+	p_script->process_event(event);
+
+	light_1.process_event(event);
+	light_2.process_event(event);
+	light_3.process_event(event);
+	light_4.process_event(event);
 }
 
 void Controller::switch_mode(KeyCode code)

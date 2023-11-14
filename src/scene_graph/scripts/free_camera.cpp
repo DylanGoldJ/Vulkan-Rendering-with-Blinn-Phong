@@ -20,6 +20,8 @@ const uint32_t FreeCamera::TRANSLATION_MOVE_SPEED = 4;
 FreeCamera::FreeCamera(Node &node) :
     NodeScript(node, "FreeCamera")
 {
+	distance_from_start = glm::vec3(0.0f, 0.0f, 0.0f);
+	rotation_from_start = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 void FreeCamera::update(float delta_time)
@@ -30,38 +32,57 @@ void FreeCamera::update(float delta_time)
 	if (key_pressed_[KeyCode::eW])
 	{	// W KEY, MOVE CAMERA FORWARD
 		delta_translation.z -= TRANSLATION_MOVE_STEP;
+		distance_from_start.z += TRANSLATION_MOVE_STEP;
 	}
 
 	if (key_pressed_[KeyCode::eS])
 	{	// S KEY, MOVE CAMERA BACK
 		delta_translation.z += TRANSLATION_MOVE_STEP;
+		distance_from_start.z -= TRANSLATION_MOVE_STEP;
 	}
 
 	if (key_pressed_[KeyCode::eA])
 	{	// A KEY, STRAFE LEFT
 		delta_translation.x -= TRANSLATION_MOVE_STEP;
+		distance_from_start.x += TRANSLATION_MOVE_STEP;
 	}
 
 	if (key_pressed_[KeyCode::eD])
 	{	// D KEY, STRAFE RIGHT
 		delta_translation.x += TRANSLATION_MOVE_STEP;
+		distance_from_start.x -= TRANSLATION_MOVE_STEP;
 	}
 
 	if (mouse_button_pressed_[MouseButton::eLeft] && mouse_button_pressed_[MouseButton::eRight])
 	{
 		// USING THE MOUSE BUTTONS WE CAN ROTATE THE CAMERA
 		delta_rotation.z += ROTATION_MOVE_WEIGHT * mouse_move_delta_.x;
+		rotation_from_start.z -= ROTATION_MOVE_WEIGHT * mouse_move_delta_.x;
 	}
 	else if (mouse_button_pressed_[MouseButton::eMiddle])
 	{
 		// USING THE MOUSE WHEEL WE CAN
 		delta_translation.x += TRANSLATION_MOVE_WEIGHT * mouse_move_delta_.x;
 		delta_translation.y += TRANSLATION_MOVE_WEIGHT * -mouse_move_delta_.y;
+		distance_from_start.x -= TRANSLATION_MOVE_WEIGHT * mouse_move_delta_.x;
+		distance_from_start.y -= TRANSLATION_MOVE_WEIGHT * -mouse_move_delta_.y;
 	}
 	else if (mouse_button_pressed_[MouseButton::eLeft])
 	{
 		delta_rotation.x -= ROTATION_MOVE_WEIGHT * mouse_move_delta_.y;
 		delta_rotation.y -= ROTATION_MOVE_WEIGHT * mouse_move_delta_.x;
+		rotation_from_start.x += ROTATION_MOVE_WEIGHT * mouse_move_delta_.y;
+		rotation_from_start.y += ROTATION_MOVE_WEIGHT * mouse_move_delta_.x;
+	}
+	
+	// If R-key is pressed, replace translation with the translation back to start
+	if (key_pressed_[KeyCode::eR])
+	{
+		delta_translation = distance_from_start;
+		delta_rotation = rotation_from_start;
+
+		distance_from_start = glm::vec3(0.0f, 0.0f, 0.0f);
+		rotation_from_start = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 	delta_translation *= speed_multiplier_ * delta_time;
 	delta_rotation *= delta_time;
@@ -74,7 +95,7 @@ void FreeCamera::update(float delta_time)
 
 		glm::quat orientation = glm::normalize(qy * transform.get_rotation() * qx);
 		transform.set_tranlsation(transform.get_translation() +
-		                          delta_translation * glm::conjugate(orientation));
+			                        delta_translation * glm::conjugate(orientation));
 		transform.set_rotation(orientation);
 	}
 
