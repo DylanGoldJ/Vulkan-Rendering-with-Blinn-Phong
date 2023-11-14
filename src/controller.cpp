@@ -55,6 +55,14 @@ void Controller::process_event(const Event &event)
 
 void Controller::reset_locations(const Event &event)
 {
+	sg::Script *p_script;
+	p_script = &player_1.get_component<sg::Script>();
+	p_script->process_event(event);
+	p_script = &player_2.get_component<sg::Script>();
+	p_script->process_event(event);
+	p_script = &camera_.get_component<sg::Script>();
+	p_script->process_event(event);
+
 	light_1.process_event(event);
 	light_2.process_event(event);
 	light_3.process_event(event);

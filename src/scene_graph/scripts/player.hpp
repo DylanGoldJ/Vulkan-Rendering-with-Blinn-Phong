@@ -13,6 +13,7 @@ class Player : public NodeScript
   private:
 	float speed_multiplier_ = 2.0f;
 	std::unordered_map<KeyCode, bool> key_pressed_;
+	glm::vec3                         distance_from_start;
 
   public:
 	static const float TRANSLATION_MOVE_STEP;

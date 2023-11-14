@@ -8,7 +8,9 @@ const float Player::TRANSLATION_MOVE_STEP = 5.0f;
 
 Player::Player(Node &node) :
     NodeScript(node)
+
 {
+	distance_from_start = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 // This method is called every frame. Responsible for updating a node's state
@@ -20,21 +22,25 @@ void Player::update(float delta_time)
 	if (key_pressed_[KeyCode::eW])
 	{
 		delta_translation.z += TRANSLATION_MOVE_STEP;
+		distance_from_start.z -= TRANSLATION_MOVE_STEP;
 	}
 
 	if (key_pressed_[KeyCode::eS])
 	{
 		delta_translation.z -= TRANSLATION_MOVE_STEP;
+		distance_from_start.z += TRANSLATION_MOVE_STEP;
 	}
 
 	if (key_pressed_[KeyCode::eA])
 	{
 		delta_translation.x -= TRANSLATION_MOVE_STEP;
+		distance_from_start.x += TRANSLATION_MOVE_STEP;
 	}
 
 	if (key_pressed_[KeyCode::eD])
 	{
 		delta_translation.x += TRANSLATION_MOVE_STEP;
+		distance_from_start.x -= TRANSLATION_MOVE_STEP;
 	}
 
 	// WE NEED TO SCALE BECAUSE WE HAVE A VARIABLE TIMER
@@ -42,7 +48,16 @@ void Player::update(float delta_time)
 
 	// UPDATE THE TRANSFORMATION VECTOR FOR THIS NODE
 	auto &T = get_node().get_transform();
-	T.set_tranlsation(T.get_translation() + delta_translation);
+	if (key_pressed_[KeyCode::eR])
+	{
+		distance_from_start *= speed_multiplier_ * delta_time;
+		T.set_tranlsation(T.get_translation() + distance_from_start);
+		distance_from_start = glm::vec3(0.0f, 0.0f, 0.0f);
+	}
+	else
+	{
+		T.set_tranlsation(T.get_translation() + delta_translation);
+	}
 }
 
 void Player::process_event(const Event &event)
