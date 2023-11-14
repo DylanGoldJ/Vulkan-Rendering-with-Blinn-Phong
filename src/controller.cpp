@@ -34,7 +34,7 @@ void Controller::process_event(const Event &event)
 	{
 		const auto &key_input_event = static_cast<const KeyInputEvent &>(event);
 		// NUMBER KEYS ARE ALL GREATER
-		if (key_input_event.code > KeyCode::eD)
+		if (key_input_event.code > KeyCode::eR)
 		{
 			switch_mode(key_input_event.code);
 			return;

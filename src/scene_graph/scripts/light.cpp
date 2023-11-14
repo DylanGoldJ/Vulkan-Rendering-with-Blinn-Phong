@@ -9,11 +9,13 @@ glm::vec3   location;
 
 Light::Light(float x, float y, float z)
 {
+	start_location = glm::vec3(x, y, z);
 	location = glm::vec3(x, y, z);
 }
 
 Light::Light(glm::vec3 vector)
 {
+	start_location = vector;
 	location = vector;
 }
 
@@ -43,6 +45,11 @@ void Light::update(float delta_time)
 	if (key_pressed_[KeyCode::eD])
 	{
 		delta_translation.x += TRANSLATION_MOVE_STEP;
+	}
+
+	if (key_pressed_[KeyCode::eR])
+	{
+		location = start_location;
 	}
 
 	// WE NEED TO SCALE BECAUSE WE HAVE A VARIABLE TIMER

@@ -14,6 +14,7 @@ class Light : public Script
 	float                             speed_multiplier_ = 2.0f;
 	std::unordered_map<KeyCode, bool> key_pressed_;
 	glm::vec3                         location;
+	glm::vec3                         start_location;
 
   public:
 	static const float TRANSLATION_MOVE_STEP;
