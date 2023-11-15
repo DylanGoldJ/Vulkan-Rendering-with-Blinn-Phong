@@ -11,6 +11,8 @@ class Projectile : public Script
 	float                             speed_multiplier_ = 2.0f;
 	std::unordered_map<KeyCode, bool> key_pressed_;
 	glm::vec3                         location;
+	glm::vec3                         rotation;
+	float                            angle;
 	glm::vec3                         start_location;
 	int                               id;
 	bool                              in_motion;
@@ -18,6 +20,8 @@ class Projectile : public Script
 
   public:
 	static const float TRANSLATION_MOVE_STEP;
+	static const float ROTATION_MOVE_WEIGHT;
+	static const float ANGLE_MOVE_WEIGHT;
 
 	/*
 	 * Constructor with 3 starting cords.
@@ -36,6 +40,17 @@ class Projectile : public Script
 	 * Processes events, like key presses.
 	 */
 	void process_event(const Event &event) override;
+	
+	/*
+	* Get location of projectile
+	*/
 	glm::vec3 getLocation();
+
+	/*
+	* Get rotation of projectile
+	*/
+	glm::vec3 getRotation();
+
+	float getAngle();
 };
 }

@@ -3,11 +3,15 @@
 namespace W3D::sg
 {
 const float Projectile::TRANSLATION_MOVE_STEP = 5.0f;
+const float Projectile::ROTATION_MOVE_WEIGHT  = 8.0f;
+const float Projectile::ANGLE_MOVE_WEIGHT     = 0.05f;
 
 W3D::sg::Projectile::Projectile(float x, float y, float z)
 {
 	start_location = glm::vec3(x, y, z);
 	location       = glm::vec3(x, y, z);
+	rotation       = glm::vec3(0.0f, 0.0f, 0.0f);
+	angle          = 0.0f;
 	in_motion      = false;
 }
 
@@ -15,6 +19,8 @@ W3D::sg::Projectile::Projectile(glm::vec3 vector)
 {
 	start_location = vector;
 	location       = vector;
+	rotation       = glm::vec3(0.0f, 0.0f, 0.0f);
+	angle          = 0.0f;
 	in_motion      = false;
 }
 
@@ -46,6 +52,12 @@ void W3D::sg::Projectile::update(float delta_time)
 		delta_translation *= speed_multiplier_ * delta_time;
 		location += delta_translation;
 	}
+
+	glm::vec3 delta_rotation(0.0f, 0.0f, 0.0f);
+	delta_rotation.x += ROTATION_MOVE_WEIGHT;
+	delta_rotation.y += ROTATION_MOVE_WEIGHT;
+	delta_rotation *= delta_time;
+	rotation += delta_rotation;
 }
 
 void W3D::sg::Projectile::process_event(const Event &event)
@@ -67,6 +79,17 @@ void W3D::sg::Projectile::process_event(const Event &event)
 glm::vec3 Projectile::getLocation()
 {
 	return location;
+}
+
+glm::vec3 Projectile::getRotation()
+{
+	return rotation;
+}
+
+float Projectile::getAngle()
+{
+	angle += ANGLE_MOVE_WEIGHT;
+	return angle;
 }
 
 }
