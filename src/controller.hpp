@@ -1,6 +1,7 @@
 #pragma once
 
 #include "scene_graph/scripts/light.hpp"
+#include "scene_graph/scripts/projectile.hpp"
 
 namespace W3D
 {
@@ -23,6 +24,7 @@ enum class ControllerMode
 	eLight2,
 	eLight3,
 	eLight4,
+	eProjectile1
 };
 
 /*
@@ -45,6 +47,8 @@ class Controller
 	sg::Light &light_2;
 	sg::Light &light_3;
 	sg::Light &light_4;
+
+	sg::Projectile &projectile_1;
 	// THIS KEEPS TRACK OF WHICH GAME OBJECT WE ARE CURRENTLY CONTROLLING
 	// WITH THIS OBJECT
 	ControllerMode mode_;
@@ -54,7 +58,7 @@ class Controller
 	* Constructor that initializes all the controllable game objects.
 	*/
 	Controller(sg::Node &camera_node, sg::Node &player_1_node, sg::Node &player_2_node
-		,sg::Light &light_1_obj, sg::Light &light_2_obj, sg::Light &light_3_obj, sg::Light &light_4_obj);
+		,sg::Light &light_1_obj, sg::Light &light_2_obj, sg::Light &light_3_obj, sg::Light &light_4_obj, sg::Projectile &projectile_1_obj);
 
 	/*
 	* This function handles events. If it's a key event it will provide a programmed

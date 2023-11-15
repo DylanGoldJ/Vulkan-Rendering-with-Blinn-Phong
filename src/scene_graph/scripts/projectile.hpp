@@ -12,6 +12,7 @@ class Projectile : public Script
 	glm::vec3                         location;
 	glm::vec3                         start_location;
 	int                               id;
+	bool                              in_motion;
 
   public:
 	static const float TRANSLATION_MOVE_STEP;

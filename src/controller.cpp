@@ -8,23 +8,25 @@
 #include "scene_graph/node.hpp"
 #include "scene_graph/script.hpp"
 #include "scene_graph/scripts/light.hpp"
+#include "scene_graph/scripts/projectile.hpp"
 
 namespace W3D
 {
 // Class that is responsible for dispatching events and answering collision queries
 
-Controller::Controller(sg::Node &camera_node, sg::Node &player_1_node, sg::Node &player_2_node, 
-	sg::Light &light_1_obj, sg::Light &light_2_obj, sg::Light &light_3_obj, sg::Light &light_4_obj) :
+Controller::Controller(sg::Node &camera_node, sg::Node &player_1_node, sg::Node &player_2_node,
+                       sg::Light &light_1_obj, sg::Light &light_2_obj, sg::Light &light_3_obj, sg::Light &light_4_obj, sg::Projectile &projectile_1_obj) :
+
     camera_(camera_node),
     player_1(player_1_node),
     player_2(player_2_node),
-	//Added light objects.
+    // Added light objects.
     light_1(light_1_obj),
     light_2(light_2_obj),
     light_3(light_3_obj),
-    light_4(light_4_obj)
+    light_4(light_4_obj),
+    projectile_1(projectile_1_obj)
 {
-
 }
 
 void Controller::process_event(const Event &event)
@@ -67,6 +69,7 @@ void Controller::reset_locations(const Event &event)
 	light_2.process_event(event);
 	light_3.process_event(event);
 	light_4.process_event(event);
+	projectile_1.process_event(event);
 }
 
 void Controller::switch_mode(KeyCode code)
@@ -140,6 +143,7 @@ void Controller::deliver_event(const Event &event)
 	else
 	{
 		p_script = &camera_.get_component<sg::Script>();
+		projectile_1.process_event(event);
 	}
 
 	// AND NOW ASK THE SCRIPT TO PROVIDE A PROGRAMMED RESPONSE
