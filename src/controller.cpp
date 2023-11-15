@@ -9,6 +9,7 @@
 #include "scene_graph/script.hpp"
 #include "scene_graph/scripts/light.hpp"
 #include "scene_graph/scripts/projectile.hpp"
+#include "scene_graph/scripts/free_camera.hpp"
 
 namespace W3D
 {

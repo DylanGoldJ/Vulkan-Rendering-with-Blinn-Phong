@@ -134,11 +134,18 @@ void Renderer::update()
 	// THESE ARE ALL THE SCENE SCRIPTS, ONE FOR EACH UPDATABLE ITEM
 	std::vector<sg::Script *> p_scripts = p_scene_->get_components<sg::Script>();
 
+	glm::vec3 camera_translation;
+
 	// GO THROUGH ALL THE SCRIPTS
 	for (sg::Script *p_script : p_scripts)
 	{
 		// UPDATE THE SCENE OBJECT VIA ITS SCRIPT
 		p_script->update(delta_time);
+		std::string name = p_script->get_name();
+		if (name == "FreeCamera")
+		{
+			camera_translation = ((W3D::sg::FreeCamera *)p_script)->getCameraTranslation();
+		}
 	}
 
 	//Go through all the lights
@@ -146,7 +153,8 @@ void Renderer::update()
 	{
 		light->update(delta_time);
 	}
-
+	
+	projectile_1_ptr->setDistanceToCamera(camera_translation);
 	projectile_1_ptr->update(delta_time);
 }
 

@@ -17,8 +17,9 @@ class FreeCamera : public NodeScript
 	glm::vec2 mouse_last_pos_{0.0f};	// THE LAST KNOWN MOUSE POSITION
 	std::unordered_map<KeyCode, bool>     key_pressed_;				// KEEPS TRACK OF WHICH KEYS WERE PRESSED
 	std::unordered_map<MouseButton, bool> mouse_button_pressed_;	// KEEPS TRACK OF WHICH MOUSE BUTTONS WERE PRESSED
-	glm::vec3                             distance_from_start;
-	glm::vec3                             rotation_from_start;
+	glm::vec3                             distance_from_start;		// Keeps track of what translation would need to be done to return to start
+	glm::vec3                             rotation_from_start;		// Keeps track of what rotation would need to be done to return to start
+	glm::vec3                             camera_translation;
 
   public:
 	// THESE LET US CONTROL CAMERA ROTATION AND MOVEMENT INCREMENTS
@@ -54,6 +55,8 @@ class FreeCamera : public NodeScript
 	* by updating the aspect ratio.
 	*/
 	void resize(uint32_t width, uint32_t height) override;
+
+	glm::vec3 getCameraTranslation();
 
 };	// class FreeCamera
 

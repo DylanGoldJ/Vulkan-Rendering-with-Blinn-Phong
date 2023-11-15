@@ -86,6 +86,7 @@ void FreeCamera::update(float delta_time)
 	}
 	delta_translation *= speed_multiplier_ * delta_time;
 	delta_rotation *= delta_time;
+	camera_translation = delta_translation;
 
 	if (delta_rotation != glm::vec3(0.0f) || delta_translation != glm::vec3(0.0f))
 	{
@@ -152,5 +153,9 @@ void FreeCamera::resize(uint32_t width, uint32_t height)
 			camera->set_aspect_ratio(static_cast<float>(width) / height);
 		}
 	}
+}
+glm::vec3 FreeCamera::getCameraTranslation()
+{
+	return camera_translation;
 };
 }        // namespace W3D::sg
