@@ -20,10 +20,25 @@ W3D::sg::Projectile::Projectile(glm::vec3 vector)
 
 void W3D::sg::Projectile::update(float delta_time)
 {
+	if (timer_.is_running())
+	{
+		timer_.tick();
+	}
+
 	if (key_pressed_[KeyCode::eF])
 	{
 		in_motion = true;
+		timer_.start_time_ = timer_.previous_tick_; //start our timer when the projectile first fires
+		timer_.start();
 	}
+
+	if (timer_.elapsed() > 3)
+	{
+		in_motion = false;
+		timer_.stop();
+		location  = start_location;
+	}
+
 	if (in_motion)
 	{
 		glm::vec3 delta_translation(0.0f, 0.0f, 0.0f);

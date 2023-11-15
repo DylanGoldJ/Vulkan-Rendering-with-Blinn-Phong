@@ -1,6 +1,7 @@
 #pragma once
 
 #include "scene_graph/script.hpp"
+#include "common/timer.hpp"
 
 namespace W3D::sg
 {
@@ -13,6 +14,7 @@ class Projectile : public Script
 	glm::vec3                         start_location;
 	int                               id;
 	bool                              in_motion;
+	Timer                             timer_;
 
   public:
 	static const float TRANSLATION_MOVE_STEP;
