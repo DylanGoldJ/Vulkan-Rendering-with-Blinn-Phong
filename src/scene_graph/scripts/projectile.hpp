@@ -33,5 +33,6 @@ class Projectile : public Script
 	 * Processes events, like key presses.
 	 */
 	void process_event(const Event &event) override;
+	glm::vec3 getLocation();
 };
 }

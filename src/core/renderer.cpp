@@ -35,6 +35,7 @@
 #include "scene_graph/scripts/free_camera.hpp"
 #include "scene_graph/scripts/player.hpp"
 #include "scene_graph/scripts/light.hpp"
+#include "scene_graph/scripts/projectile.hpp"
 
 namespace W3D
 {
@@ -64,7 +65,11 @@ sg::Light*     LIGHT_POSITIONS[NUM_LIGHTS]    = {
 	light_3_ptr,
 	light_4_ptr
 };
-Renderer::Renderer()
+
+sg::Projectile projectile_1 = sg::Projectile(glm::vec3(8.0f, 8.0f, 8.0f));
+sg::Projectile *projectile_1_ptr = &projectile_1;
+
+    Renderer::Renderer()
 {
 	// CREATE OUR WINDOW AND SETUP THE EVENT HANDLERS
 	p_window_ = std::make_unique<Window>("Wolfie3D");
@@ -141,6 +146,8 @@ void Renderer::update()
 	{
 		light->update(delta_time);
 	}
+
+	projectile_1_ptr->update(delta_time);
 }
 
 void Renderer::process_event(const Event &event)
@@ -399,6 +406,11 @@ void Renderer::draw_lights(CommandBuffer &cmd_buf)
 
 		draw_submesh(cmd_buf, *baked_pbr_.p_box);
 	}
+	glm::mat4 world_m = glm::translate(scaled_m, projectile_1_ptr->getLocation());
+
+	cmd_buf.get_handle().pushConstants<glm::mat4>(pl_layout, vk::ShaderStageFlagBits::eVertex, 0, world_m);
+
+	draw_submesh(cmd_buf, *baked_pbr_.p_box);
 }
 
 void Renderer::draw_scene(CommandBuffer &cmd_buf)
