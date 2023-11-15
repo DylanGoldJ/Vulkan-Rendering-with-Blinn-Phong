@@ -60,6 +60,7 @@ void Player::update(float delta_time)
 	}
 }
 
+
 void Player::process_event(const Event &event)
 {
 	if (event.type == EventType::eKeyInput)

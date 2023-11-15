@@ -87,6 +87,12 @@ Renderer::Renderer()
 	baked_pbr_ = baker.bake();
 	create_rendering_resources();
 	p_sframe_buffer_ = std::make_unique<SwapchainFramebuffer>(*p_device_, *p_swapchain_, *p_render_pass_);
+
+	//Create copies for players 3-5
+	copy_node("player_2", "player_3"); //Make each a copy of the last for increasing ID numbers.
+	copy_node("player_3", "player_4");
+	copy_node("player_4", "player_5");
+	p_scene_;
 	create_controller();
 }
 
@@ -166,8 +172,11 @@ void Renderer::load_scene(const char *scene_name)
 
 void Renderer::create_controller()
 {
-	p_controller_ = std::make_unique<Controller>(*p_camera_node_, add_player_script("player_1"), add_player_script("player_2"),
-		*(LIGHT_POSITIONS[0]), *(LIGHT_POSITIONS[1]), *(LIGHT_POSITIONS[2]), *(LIGHT_POSITIONS[3]));
+	p_controller_ = std::make_unique<Controller>(
+		*p_camera_node_, add_player_script("player_1"), add_player_script("player_2"), 
+		add_player_script("player_3"), add_player_script("player_4"), add_player_script("player_5"),
+		*(LIGHT_POSITIONS[0]), *(LIGHT_POSITIONS[1]), *(LIGHT_POSITIONS[2]), *(LIGHT_POSITIONS[3])
+	);
 }
 
 void Renderer::render_frame()
@@ -421,7 +430,7 @@ void Renderer::draw_scene(CommandBuffer &cmd_buf)
 		sg::Node *p_node = p_nodes.front();
 		p_nodes.pop();
 
-		if (p_node->has_component<sg::Mesh>())
+		if (p_node->has_component<sg::Mesh>() && p_node->get_render()) //Here we also check if the node should be rendered.
 		{
 			push_node_model_matrix(cmd_buf, p_node);
 			std::vector<sg::SubMesh *> p_submeshs = p_node->get_component<sg::Mesh>().get_p_submeshs();
@@ -486,6 +495,57 @@ sg::Node &Renderer::add_player_script(const char *node_name)
 	p_scene_->add_component_to_node(std::move(p_script), *p_node);
 
 	return *p_node;
+}
+
+sg::Node &Renderer::copy_node(const char *node_name, const char *new_node_name)
+{
+	//Get the node
+	sg::Node *p_node = p_scene_->find_node(node_name);
+	if (!p_node)
+	{
+		LOGE("Cannot find node {}", node_name);
+		abort();
+	};
+	
+	//sg::Node new_node = sg::Node(*p_node);
+	//new_node.set_name(new_node_name);
+	//sg::Mesh new_node_mesh = p_node->get_component<sg::Mesh>();
+
+	//p_scene_->add_node(std::make_unique<sg::Node>(new_node));
+
+
+	//// We need to also add this as a sub child to the top level node
+	//// We should really add this as a child of another child, its a tree structure, but just put it at the top level for ease.
+	////This gets the top level node, the name is ""
+	//sg::Node *top_node = p_scene_->find_node("");
+	//if (!top_node)
+	//{
+	//	LOGE("Cannot find node {}", node_name);
+	//	abort();
+	//};
+
+	//top_node->add_child(new_node);
+
+
+
+
+	std::unique_ptr<sg::Node> new_node = std::make_unique<sg::Node>(*p_node);
+	new_node->set_name(new_node_name);
+	sg::Mesh new_node_mesh = p_node->get_component<sg::Mesh>();
+
+	p_scene_->add_node(std::move(new_node));
+
+	// Get the top level node, the name is ""
+	sg::Node *top_node = p_scene_->find_node("");
+	if (!top_node)
+	{
+		LOGE("Cannot find top node");
+		abort();
+	}
+
+	top_node->add_child(*p_scene_->find_node(new_node_name));
+
+	return *new_node;
 }
 
 void Renderer::create_rendering_resources()
