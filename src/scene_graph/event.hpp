@@ -36,6 +36,7 @@ enum class KeyCode
 	eS,
 	eA,
 	eD,
+	eF,
 	eR,
 
 	e1,
