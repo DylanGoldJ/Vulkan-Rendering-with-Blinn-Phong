@@ -25,7 +25,7 @@ void W3D::sg::Projectile::update(float delta_time)
 		timer_.tick();
 	}
 
-	if (key_pressed_[KeyCode::eF])
+	if (key_pressed_[KeyCode::eF] && !in_motion)
 	{
 		in_motion = true;
 		timer_.start_time_ = timer_.previous_tick_; //start our timer when the projectile first fires
