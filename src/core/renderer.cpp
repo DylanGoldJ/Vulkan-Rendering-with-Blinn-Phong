@@ -66,7 +66,7 @@ sg::Light*     LIGHT_POSITIONS[NUM_LIGHTS]    = {
 	light_4_ptr
 };
 
-sg::Projectile projectile_1 = sg::Projectile(glm::vec3(8.0f, 8.0f, 8.0f));
+sg::Projectile  projectile_1     = sg::Projectile(glm::vec3(0.0f, -2.0f, 20.0f));
 sg::Projectile *projectile_1_ptr = &projectile_1;
 
     Renderer::Renderer()
