@@ -17,6 +17,11 @@ void Mesh::add_node(Node &node)
 	p_nodes.push_back(&node);
 }
 
+void Mesh::reset_nodes()
+{
+	p_nodes.clear();
+}
+
 std::type_index Mesh::get_type()
 {
 	return typeid(Mesh);

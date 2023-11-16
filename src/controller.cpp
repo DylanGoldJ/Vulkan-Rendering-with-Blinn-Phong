@@ -187,8 +187,8 @@ void Controller::deliver_event(const Event &event)
 	}
 	else if (mode_ == ControllerMode::eCreatePlayer)
 	{
-		spawn_player();
 		mode_ = ControllerMode::eCamera;
+		spawn_player();
 		return;
 	}
 	else
@@ -210,6 +210,18 @@ void Controller::spawn_player()
 		{
 			current_player->get_transform().set_tranlsation(glm::vec3(0.0f, 0.0f, 0.0f));
 			current_player->set_render(true);
+			if (current_player->get_name().compare(player_3.get_name()) == 0)
+			{
+				mode_ = ControllerMode::ePlayer3;
+			}
+			if (current_player->get_name().compare(player_4.get_name()) == 0)
+			{
+				mode_ = ControllerMode::ePlayer4;
+			}
+			if (current_player->get_name().compare(player_5.get_name()) == 0)
+			{
+				mode_ = ControllerMode::ePlayer5;
+			}
 			return;
 		}
 	}

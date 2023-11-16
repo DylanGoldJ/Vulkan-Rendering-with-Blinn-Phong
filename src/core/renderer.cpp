@@ -499,42 +499,27 @@ sg::Node &Renderer::add_player_script(const char *node_name)
 
 sg::Node &Renderer::copy_node(const char *node_name, const char *new_node_name)
 {
-	//Get the node
+	//Get the node we are copying
 	sg::Node *p_node = p_scene_->find_node(node_name);
 	if (!p_node)
 	{
 		LOGE("Cannot find node {}", node_name);
 		abort();
 	};
-	
-	//sg::Node new_node = sg::Node(*p_node);
-	//new_node.set_name(new_node_name);
-	//sg::Mesh new_node_mesh = p_node->get_component<sg::Mesh>();
 
-	//p_scene_->add_node(std::make_unique<sg::Node>(new_node));
-
-
-	//// We need to also add this as a sub child to the top level node
-	//// We should really add this as a child of another child, its a tree structure, but just put it at the top level for ease.
-	////This gets the top level node, the name is ""
-	//sg::Node *top_node = p_scene_->find_node("");
-	//if (!top_node)
-	//{
-	//	LOGE("Cannot find node {}", node_name);
-	//	abort();
-	//};
-
-	//top_node->add_child(new_node);
-
-
-
-
+	//Create copy
 	std::unique_ptr<sg::Node> new_node = std::make_unique<sg::Node>(*p_node);
+	//Change the name
 	new_node->set_name(new_node_name);
-	sg::Mesh new_node_mesh = p_node->get_component<sg::Mesh>();
+	//Connect mesh to node
+	new_node->get_component<sg::Mesh>().reset_nodes();
+	new_node->get_component<sg::Mesh>().add_node(*new_node);
 
+	//Add the new node to the scene
 	p_scene_->add_node(std::move(new_node));
 
+	// We need to also add this as a sub child to the top level node
+	// We should really add this as a child of another child, its a tree structure, but just put it at the top level for ease.
 	// Get the top level node, the name is ""
 	sg::Node *top_node = p_scene_->find_node("");
 	if (!top_node)
@@ -543,6 +528,7 @@ sg::Node &Renderer::copy_node(const char *node_name, const char *new_node_name)
 		abort();
 	}
 
+	//Add to the top level node.
 	top_node->add_child(*p_scene_->find_node(new_node_name));
 
 	return *new_node;
