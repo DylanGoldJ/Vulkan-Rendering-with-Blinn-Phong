@@ -42,17 +42,23 @@ void W3D::sg::Projectile::update(float delta_time)
 	// Key press functions
 	if (key_pressed_[KeyCode::eF] && !in_motion) // Fired
 	{
-		location = camera_location * 3.0f;
 		in_motion = true;
 		should_render      = true;
 		timer_.start_time_ = timer_.previous_tick_;
 		timer_.start();
+
+		location = camera_location * 3.0f;
+
+		//location += (glm::vec3(TRANSLATION_MOVE_STEP, TRANSLATION_MOVE_STEP, TRANSLATION_MOVE_STEP) * camera_rotation * 0.1f);
 	}
 
 	// Location updates
 	if (in_motion)
 	{
+		// Move in a straight line away from camera
 		delta_translation.z -= TRANSLATION_MOVE_STEP;
+
+		//delta_translation += (glm::vec3(TRANSLATION_MOVE_STEP, TRANSLATION_MOVE_STEP, TRANSLATION_MOVE_STEP) * camera_rotation * 0.1f);
 	}
 	// Update rotation
 	delta_rotation.x += ROTATION_MOVE_WEIGHT;
@@ -61,7 +67,6 @@ void W3D::sg::Projectile::update(float delta_time)
 	delta_rotation *= delta_time;
 	rotation += delta_rotation;
 
-	//Update location
 	delta_translation *= speed_multiplier_ * delta_time;
 	location += delta_translation;
 }
@@ -101,6 +106,11 @@ float Projectile::getAngle()
 void Projectile::setDistanceToCamera(glm::vec3 num)
 {
 	camera_location = glm::vec3(num.x, num.y, num.z);
+}
+
+void Projectile::setRotationToCamera(glm::quat num)
+{
+	camera_rotation = glm::quat(num.w, num.x, num.y, num.z);
 }
 
 bool Projectile::get_render()

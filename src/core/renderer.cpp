@@ -153,6 +153,7 @@ void Renderer::update()
 	sg::Node *p_node = p_scene_->find_node("default_camera");
 
 	projectile_1_ptr->setDistanceToCamera(p_node->get_transform().get_translation());
+	projectile_1_ptr->setRotationToCamera(p_node->get_transform().get_rotation());
 	projectile_1_ptr->update(delta_time);
 }
 
@@ -421,9 +422,9 @@ void Renderer::draw_lights(CommandBuffer &cmd_buf)
 		
 		glm::mat4 world_m_rotate = glm::rotate(scaled_m, glm::radians(projectile_1_ptr->getAngle()), projectile_1_ptr->getRotation());
 
-		cmd_buf.get_handle().pushConstants<glm::mat4>(pl_layout, vk::ShaderStageFlagBits::eVertex, 0, world_m);
+		//cmd_buf.get_handle().pushConstants<glm::mat4>(pl_layout, vk::ShaderStageFlagBits::eVertex, 0, world_m);
 
-		//cmd_buf.get_handle().pushConstants<glm::mat4>(pl_layout, vk::ShaderStageFlagBits::eVertex, 0, world_m * world_m_rotate);
+		cmd_buf.get_handle().pushConstants<glm::mat4>(pl_layout, vk::ShaderStageFlagBits::eVertex, 0, world_m * world_m_rotate);
 
 		draw_submesh(cmd_buf, *baked_pbr_.p_box);
 	}
