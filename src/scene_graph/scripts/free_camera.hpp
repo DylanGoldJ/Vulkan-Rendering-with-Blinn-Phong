@@ -20,6 +20,7 @@ class FreeCamera : public NodeScript
 	glm::vec3                             distance_from_start;		// Keeps track of what translation would need to be done to return to start
 	glm::vec3                             rotation_from_start;		// Keeps track of what rotation would need to be done to return to start
 	glm::vec3                             camera_translation;
+	glm::vec3                             camera_rotation;
 
   public:
 	// THESE LET US CONTROL CAMERA ROTATION AND MOVEMENT INCREMENTS
@@ -57,6 +58,8 @@ class FreeCamera : public NodeScript
 	void resize(uint32_t width, uint32_t height) override;
 
 	glm::vec3 getCameraTranslation();
+
+	glm::vec3 getCameraRotation();
 
 };	// class FreeCamera
 

@@ -13,6 +13,8 @@ W3D::sg::Projectile::Projectile(float x, float y, float z)
 	rotation       = glm::vec3(0.0f, 0.0f, 0.0f);
 	angle          = 0.0f;
 	in_motion      = false;
+	distance_to_camera = glm::vec3(0.0f, 0.0f, 0.0f);
+	rotation_from_camera = glm::vec3(0.0f, 0.0f, 0.0f);
 	
 }
 
@@ -24,10 +26,14 @@ W3D::sg::Projectile::Projectile(glm::vec3 vector)
 	angle          = 0.0f;
 	in_motion      = false;
 	distance_to_camera = glm::vec3(0.0f, 0.0f, 0.0f);
+	rotation_from_camera = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 void W3D::sg::Projectile::update(float delta_time)
 {
+	glm::vec3 delta_translation(0.0f, 0.0f, 0.0f);
+	glm::vec3 delta_rotation(0.0f, 0.0f, 0.0f);
+
 	// Timer controls
 	if (timer_.is_running())
 	{
@@ -44,8 +50,18 @@ void W3D::sg::Projectile::update(float delta_time)
 	if (key_pressed_[KeyCode::eF] && !in_motion) // Firing
 	{
 		in_motion = true;
-		timer_.start_time_ = timer_.previous_tick_; //start our timer when the projectile first fires
+
+		// Start our timer when the projectile first fires
+		timer_.start_time_ = timer_.previous_tick_;
 		timer_.start();
+
+		// Set the location to where the camera is
+		delta_translation += distance_to_camera;
+		delta_rotation += rotation_from_camera;
+
+		// Set variables back to 0
+		distance_to_camera = glm::vec3(0.0f, 0.0f, 0.0f);
+		rotation_from_camera = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 
 	if (key_pressed_[KeyCode::eR]) // Reset
@@ -57,18 +73,21 @@ void W3D::sg::Projectile::update(float delta_time)
 	}
 
 	// Location controls
-	glm::vec3 delta_translation(0.0f, 0.0f, 0.0f);
 	if (in_motion)
 	{
+		// Forward motion
 		delta_translation.z -= TRANSLATION_MOVE_STEP;
-		delta_translation *= speed_multiplier_ * delta_time;
-		location += delta_translation;
-	}
-	location += distance_to_camera;
 
-	glm::vec3 delta_rotation(0.0f, 0.0f, 0.0f);
-	delta_rotation.x += ROTATION_MOVE_WEIGHT;
-	delta_rotation.y += ROTATION_MOVE_WEIGHT;
+		// Spin the projectile
+		//delta_rotation.x += ROTATION_MOVE_WEIGHT;
+		//delta_rotation.y += ROTATION_MOVE_WEIGHT;
+	}
+
+	delta_translation.x += TRANSLATION_MOVE_STEP;
+
+	delta_translation *= speed_multiplier_ * delta_time;
+	location += delta_translation;
+
 	delta_rotation *= delta_time;
 	rotation += delta_rotation;
 }
@@ -105,10 +124,15 @@ float Projectile::getAngle()
 	return angle;
 }
 
-void Projectile::setDistanceToCamera(glm::vec3 num)
+void Projectile::setDistanceToCamera(glm::vec3 *num)
 {
-	distance_to_camera = num;
+	distance_to_camera += glm::vec3(num->x, num->y, num->z);
 }
+void Projectile::setRotationFromCamera(glm::vec3 *num)
+{
+	rotation_from_camera += glm::vec3(num->x, num->y, num->z);
+}
+
 
 }
 

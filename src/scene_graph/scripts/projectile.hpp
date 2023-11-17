@@ -17,6 +17,7 @@ class Projectile : public Script
 	bool                              in_motion;
 	Timer                             timer_;
 	glm::vec3                         distance_to_camera;
+	glm::vec3                         rotation_from_camera;
 
   public:
 	static const float TRANSLATION_MOVE_STEP;
@@ -53,6 +54,8 @@ class Projectile : public Script
 
 	float getAngle();
 
-	void setDistanceToCamera(glm::vec3 num);
+	void setDistanceToCamera(glm::vec3 *num);
+
+	void setRotationFromCamera(glm::vec3 *num);
 };
 }

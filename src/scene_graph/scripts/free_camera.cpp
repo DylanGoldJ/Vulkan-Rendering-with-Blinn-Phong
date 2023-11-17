@@ -84,9 +84,10 @@ void FreeCamera::update(float delta_time)
 		distance_from_start = glm::vec3(0.0f, 0.0f, 0.0f);
 		rotation_from_start = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
+	camera_translation = delta_translation;
+	camera_rotation    = delta_rotation;
 	delta_translation *= speed_multiplier_ * delta_time;
 	delta_rotation *= delta_time;
-	camera_translation = delta_translation;
 
 	if (delta_rotation != glm::vec3(0.0f) || delta_translation != glm::vec3(0.0f))
 	{
@@ -157,5 +158,9 @@ void FreeCamera::resize(uint32_t width, uint32_t height)
 glm::vec3 FreeCamera::getCameraTranslation()
 {
 	return camera_translation;
+}
+glm::vec3 FreeCamera::getCameraRotation()
+{
+	return camera_rotation;
 };
 }        // namespace W3D::sg
