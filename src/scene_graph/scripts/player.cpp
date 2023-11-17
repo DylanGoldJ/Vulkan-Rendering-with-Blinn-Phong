@@ -21,14 +21,14 @@ void Player::update(float delta_time)
 	// Caveat: The models are rotated! Therefore, we translate the objects in model space in z-direction
 	if (key_pressed_[KeyCode::eW])
 	{
-		delta_translation.z += TRANSLATION_MOVE_STEP;
-		distance_from_start.z -= TRANSLATION_MOVE_STEP;
+		delta_translation.y += TRANSLATION_MOVE_STEP;
+		distance_from_start.y -= TRANSLATION_MOVE_STEP;
 	}
 
 	if (key_pressed_[KeyCode::eS])
 	{
-		delta_translation.z -= TRANSLATION_MOVE_STEP;
-		distance_from_start.z += TRANSLATION_MOVE_STEP;
+		delta_translation.y -= TRANSLATION_MOVE_STEP;
+		distance_from_start.y += TRANSLATION_MOVE_STEP;
 	}
 
 	if (key_pressed_[KeyCode::eA])
@@ -59,6 +59,7 @@ void Player::update(float delta_time)
 		T.set_tranlsation(T.get_translation() + delta_translation);
 	}
 }
+
 
 void Player::process_event(const Event &event)
 {

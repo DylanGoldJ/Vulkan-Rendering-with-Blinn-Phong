@@ -106,6 +106,7 @@ inline KeyCode translate_key_code(int key)
 	    {GLFW_KEY_D, KeyCode::eD},
 	    {GLFW_KEY_F, KeyCode::eF},
 	    {GLFW_KEY_R, KeyCode::eR},
+	    {GLFW_KEY_Q, KeyCode::eQ},
 	    {GLFW_KEY_1, KeyCode::e1},
 	    {GLFW_KEY_2, KeyCode::e2},
 	    {GLFW_KEY_3, KeyCode::e3},
@@ -114,7 +115,8 @@ inline KeyCode translate_key_code(int key)
 		{GLFW_KEY_6, KeyCode::e6},
 	    {GLFW_KEY_7, KeyCode::e7},
 	    {GLFW_KEY_8, KeyCode::e8},
-	    {GLFW_KEY_9, KeyCode::e9},
+		{GLFW_KEY_9, KeyCode::e9},
+		{GLFW_KEY_0, KeyCode::e0}
 	};
 	// WHAT IS THE CORRESPONDING KeyCode? NOTE, THE find METHOD RETURNS AN
 	// ITERATOR, WHICH POINTS TO A NODE WHERE second WOULD BE THE DATA

@@ -1,6 +1,6 @@
 // IN THIS FILE WE'LL BE DECLARING METHODS DECLARED INSIDE THIS HEADER FILE
 #include "node.hpp"
-
+#include "scene_graph/components/mesh.hpp"
 namespace W3D::sg
 {
 Node::Node(const size_t id, const std::string &name) :
@@ -9,6 +9,20 @@ Node::Node(const size_t id, const std::string &name) :
     T_(*this)
 {
 	set_component(T_);
+}
+
+//Copy constructor
+Node::Node(Node &t) :
+    id_(t.id_ + 1),
+    name_(t.name_),
+    T_(*this),
+    parent_(t.parent_),
+    children_(t.children_),
+    should_render(false)        // Copies do not render by default.
+{
+	set_component(T_);
+	set_component(t.get_component<sg::Mesh>());
+	T_.set_scale(glm::vec3(.175f, .175f, .175f));
 }
 
 void Node::add_child(Node &child)
@@ -68,6 +82,20 @@ sg::Transform &Node::get_transform() const
 bool Node::has_component(const std::type_index index)
 {
 	return components_.count(index) > 0;
+}
+
+void Node::set_render(bool val)
+{
+	should_render = val;
+}
+bool Node::get_render()
+{
+	return should_render;
+}
+
+void Node::set_name(std::string new_name)
+{
+	name_ = new_name;
 }
 
 }	// namespace W3D::sg

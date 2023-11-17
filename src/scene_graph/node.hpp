@@ -25,12 +25,18 @@ class Node
 	Node                                            *parent_{nullptr};	// PARENT NODE IN SCENE GRAPH
 	std::vector<Node *>                              children_;			// CHILD NODES FOR THIS NODE
 	std::unordered_map<std::type_index, Component *> components_;		// COMPONENT ASSOCIATED WITH THIS NODE
+	bool                                             should_render = true; //Added to determine if a node should be rendered, default true
 
   public:
 	/*
 	* Constructor initializes its id and name.
 	*/
 	Node(const size_t id, const std::string &name);
+
+	/*
+	  Copy constructor
+	*/
+	Node(Node &t);
 
 	/*
 	* Accessor method for getting the node's id.
@@ -99,6 +105,18 @@ class Node
 	* Adds a node as a child to this node.
 	*/
 	void add_child(Node &child);
+
+	/*
+	   Sets the should_render value.
+	*/
+	void set_render(bool val);
+
+	/*
+		Gets the should_render value.
+	*/
+	bool get_render();
+
+	void set_name(std::string new_name);
 
 };	// class Node
 

@@ -199,5 +199,6 @@ class Renderer
 	void create_pipeline_resources();
 
 	sg::Node &add_player_script(const char *node_name);
+	sg::Node &copy_node(const char *node_name, const char *new_node_name);
 };
 }        // namespace W3D

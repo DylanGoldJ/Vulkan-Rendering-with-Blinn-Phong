@@ -14,13 +14,15 @@ namespace W3D
 {
 // Class that is responsible for dispatching events and answering collision queries
 
-Controller::Controller(sg::Node &camera_node, sg::Node &player_1_node, sg::Node &player_2_node,
-                       sg::Light &light_1_obj, sg::Light &light_2_obj, sg::Light &light_3_obj, sg::Light &light_4_obj, sg::Projectile &projectile_1_obj) :
-
+Controller::Controller(sg::Node &camera_node, sg::Node &player_1_node, sg::Node &player_2_node, sg::Node &player_3_node, sg::Node &player_4_node, sg::Node &player_5_node,
+	sg::Light &light_1_obj, sg::Light &light_2_obj, sg::Light &light_3_obj, sg::Light &light_4_obj, sg::Projectile &projectile_1_obj) :
     camera_(camera_node),
     player_1(player_1_node),
     player_2(player_2_node),
-    // Added light objects.
+    player_3(player_3_node),
+    player_4(player_4_node),
+    player_5(player_5_node),
+	//Added light objects.
     light_1(light_1_obj),
     light_2(light_2_obj),
     light_3(light_3_obj),
@@ -35,7 +37,14 @@ void Controller::process_event(const Event &event)
 	if (event.type == EventType::eKeyInput)
 	{
 		const auto &key_input_event = static_cast<const KeyInputEvent &>(event);
-		
+
+		// When we create a new instance.
+		if (key_input_event.code == KeyCode::eQ)
+		{
+			switch_mode(key_input_event.code);
+			return;
+		}
+
 		// NUMBER KEYS ARE ALL GREATER
 		if (key_input_event.code > KeyCode::eR)
 		{
@@ -70,6 +79,11 @@ void Controller::reset_locations(const Event &event)
 	light_3.process_event(event);
 	light_4.process_event(event);
 	projectile_1.process_event(event);
+
+	//Reset the added players
+	player_3.set_render(false);
+	player_4.set_render(false);
+	player_5.set_render(false);
 }
 
 void Controller::switch_mode(KeyCode code)
@@ -100,6 +114,27 @@ void Controller::switch_mode(KeyCode code)
 	{
 		mode_ = ControllerMode::eLight4;
 	}
+	else if (code == KeyCode::e8 && player_3.get_render()) //Also check if it has been spawned.
+	{
+		mode_ = ControllerMode::ePlayer3;
+	}
+	else if (code == KeyCode::e9 && player_4.get_render())
+	{
+		mode_ = ControllerMode::ePlayer4;
+	}
+	else if (code == KeyCode::e0 && player_5.get_render())
+	{
+		mode_ = ControllerMode::ePlayer5;
+	}
+	else if (code == KeyCode::e0)
+	{
+		mode_ = ControllerMode::ePlayer5;
+	}
+	else if (code == KeyCode::eQ)
+	{
+		mode_ = ControllerMode::eCreatePlayer;
+	}
+
 	// THE DEFAULT IS TO SWITCH CONTROL TO THE CAMERA
 	else
 	{
@@ -119,6 +154,18 @@ void Controller::deliver_event(const Event &event)
 	else if (mode_ == ControllerMode::ePlayer2)
 	{
 		p_script = &player_2.get_component<sg::Script>();
+	}
+	else if (mode_ == ControllerMode::ePlayer3)
+	{
+		p_script = &player_3.get_component<sg::Script>();
+	}
+	else if (mode_ == ControllerMode::ePlayer4)
+	{
+		p_script = &player_4.get_component<sg::Script>();
+	}
+	else if (mode_ == ControllerMode::ePlayer5)
+	{
+		p_script = &player_5.get_component<sg::Script>();
 	}
 	else if (mode_ == ControllerMode::eLight1)
 	{
@@ -140,6 +187,12 @@ void Controller::deliver_event(const Event &event)
 		light_4.process_event(event);
 		return;
 	}
+	else if (mode_ == ControllerMode::eCreatePlayer)
+	{
+		mode_ = ControllerMode::eCamera;
+		spawn_player();
+		return;
+	}
 	else
 	{
 		p_script = &camera_.get_component<sg::Script>();
@@ -149,6 +202,35 @@ void Controller::deliver_event(const Event &event)
 	// AND NOW ASK THE SCRIPT TO PROVIDE A PROGRAMMED RESPONSE
 	p_script->process_event(event);
 }
+
+void Controller::spawn_player()
+{
+	sg::Node *possible_players[] = {&player_3, &player_4, &player_5};
+	for (sg::Node *current_player : possible_players)
+	{
+		// Iterate through the possible players, the first one that is false rendered, make it true then return
+		if (!current_player->get_render())
+		{
+			current_player->get_transform().set_tranlsation(glm::vec3(0.0f, 0.0f, 0.0f));
+			current_player->set_render(true);
+			if (current_player->get_name().compare(player_3.get_name()) == 0)
+			{
+				mode_ = ControllerMode::ePlayer3;
+			}
+			if (current_player->get_name().compare(player_4.get_name()) == 0)
+			{
+				mode_ = ControllerMode::ePlayer4;
+			}
+			if (current_player->get_name().compare(player_5.get_name()) == 0)
+			{
+				mode_ = ControllerMode::ePlayer5;
+			}
+			return;
+		}
+	}
+	// If we fall through all were already rendered.
+}
+
 
 bool Controller::are_players_colliding()
 {
