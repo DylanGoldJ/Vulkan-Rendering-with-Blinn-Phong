@@ -44,6 +44,11 @@ class Mesh : public Component
 	void add_node(Node &node);
 
 	/*
+		Resets the nodes
+	*/
+	void reset_nodes();
+
+	/*
 	* Accessor method for getting the actual type of this object, which will be a subtype.
 	*/
 	std::type_index               get_type() override;
