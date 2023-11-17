@@ -521,7 +521,7 @@ sg::Node &Renderer::copy_node(const char *node_name, const char *new_node_name)
 	// We need to also add this as a sub child to the top level node
 	// We should really add this as a child of another child, its a tree structure, but just put it at the top level for ease.
 	// Get the top level node, the name is ""
-	sg::Node *top_node = p_scene_->find_node("");
+	sg::Node *top_node = p_scene_->find_node("Node_0");
 	if (!top_node)
 	{
 		LOGE("Cannot find top node");

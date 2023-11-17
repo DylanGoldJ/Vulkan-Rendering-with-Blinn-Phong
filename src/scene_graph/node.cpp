@@ -22,6 +22,7 @@ Node::Node(Node &t) :
 {
 	set_component(T_);
 	set_component(t.get_component<sg::Mesh>());
+	T_.set_scale(glm::vec3(.175f, .175f, .175f));
 }
 
 void Node::add_child(Node &child)
