@@ -8,22 +8,18 @@ const float Projectile::ANGLE_MOVE_WEIGHT     = 0.05f;
 
 W3D::sg::Projectile::Projectile(float x, float y, float z)
 {
-	start_location = glm::vec3(x, y, z);
 	location       = glm::vec3(x, y, z);
 	rotation       = glm::vec3(0.0f, 0.0f, 0.0f);
 	angle          = 0.0f;
 	in_motion      = false;
-	location_behind_camera = glm::vec3(x, y, z);
 }
 
 W3D::sg::Projectile::Projectile(glm::vec3 vector)
 {
-	start_location = vector;
 	location       = vector;
 	rotation       = glm::vec3(0.0f, 0.0f, 0.0f);
 	angle          = 0.0f;
 	in_motion      = false;
-	location_behind_camera = vector;
 }
 
 void W3D::sg::Projectile::update(float delta_time)
@@ -40,13 +36,15 @@ void W3D::sg::Projectile::update(float delta_time)
 	{
 		in_motion = false;
 		timer_.stop();
-		location = location_behind_camera;
+		should_render = false;
 	}
 
 	// Key press functions
 	if (key_pressed_[KeyCode::eF] && !in_motion) // Fired
 	{
+		location = camera_location * 3.0f;
 		in_motion = true;
+		should_render      = true;
 		timer_.start_time_ = timer_.previous_tick_;
 		timer_.start();
 	}
@@ -56,20 +54,16 @@ void W3D::sg::Projectile::update(float delta_time)
 	{
 		delta_translation.z -= TRANSLATION_MOVE_STEP;
 	}
-
-	location_behind_camera += distance_to_camera;
-
+	// Update rotation
 	delta_rotation.x += ROTATION_MOVE_WEIGHT;
 	delta_rotation.y += ROTATION_MOVE_WEIGHT;
 
-	delta_translation *= speed_multiplier_ * delta_time;
-	if (!in_motion)
-		delta_translation += distance_to_camera;
-	location += delta_translation;
-
-
 	delta_rotation *= delta_time;
 	rotation += delta_rotation;
+
+	//Update location
+	delta_translation *= speed_multiplier_ * delta_time;
+	location += delta_translation;
 }
 
 void W3D::sg::Projectile::process_event(const Event &event)
@@ -104,11 +98,15 @@ float Projectile::getAngle()
 	return angle;
 }
 
-void Projectile::setDistanceToCamera(glm::vec3 *num)
+void Projectile::setDistanceToCamera(glm::vec3 num)
 {
-	distance_to_camera = glm::vec3(num->x, num->y, num->z);
+	camera_location = glm::vec3(num.x, num.y, num.z);
 }
 
+bool Projectile::get_render()
+{
+	return should_render;
+}
 }
 
 

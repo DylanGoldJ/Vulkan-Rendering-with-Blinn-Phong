@@ -66,7 +66,7 @@ sg::Light*     LIGHT_POSITIONS[NUM_LIGHTS]    = {
 	light_4_ptr
 };
 
-sg::Projectile  projectile_1     = sg::Projectile(glm::vec3(0.0f, -2.0f, 20.0f));
+sg::Projectile  projectile_1     = sg::Projectile(glm::vec3(3.0f, 3.0f, 3.0f));
 sg::Projectile *projectile_1_ptr = &projectile_1;
 
     Renderer::Renderer()
@@ -141,11 +141,6 @@ void Renderer::update()
 	{
 		// UPDATE THE SCENE OBJECT VIA ITS SCRIPT
 		p_script->update(delta_time);
-
-		if (p_script->get_name() == "FreeCamera")
-		{
-			camera_translation = ((W3D::sg::FreeCamera *) p_script)->getCameraTranslation();
-		}
 	}
 
 	//Go through all the lights
@@ -154,7 +149,10 @@ void Renderer::update()
 		light->update(delta_time);
 	}
 
-	projectile_1_ptr->setDistanceToCamera(&camera_translation);
+	//Get the camera
+	sg::Node *p_node = p_scene_->find_node("default_camera");
+
+	projectile_1_ptr->setDistanceToCamera(p_node->get_transform().get_translation());
 	projectile_1_ptr->update(delta_time);
 }
 
@@ -414,12 +412,21 @@ void Renderer::draw_lights(CommandBuffer &cmd_buf)
 
 		draw_submesh(cmd_buf, *baked_pbr_.p_box);
 	}
-	glm::mat4 world_m = glm::translate(scaled_m, projectile_1_ptr->getLocation());
-	glm::mat4 world_m_rotate = glm::rotate(scaled_m, glm::radians(projectile_1_ptr->getAngle()), projectile_1_ptr->getRotation());
 
-	cmd_buf.get_handle().pushConstants<glm::mat4>(pl_layout, vk::ShaderStageFlagBits::eVertex, 0, world_m * world_m_rotate);
+	//Projectile
+	if (projectile_1_ptr->get_render())
+	{
+		glm::vec3 test           = projectile_1_ptr->getLocation();
+		glm::mat4 world_m        = glm::translate(scaled_m, projectile_1_ptr->getLocation());
+		
+		glm::mat4 world_m_rotate = glm::rotate(scaled_m, glm::radians(projectile_1_ptr->getAngle()), projectile_1_ptr->getRotation());
 
-	draw_submesh(cmd_buf, *baked_pbr_.p_box);
+		cmd_buf.get_handle().pushConstants<glm::mat4>(pl_layout, vk::ShaderStageFlagBits::eVertex, 0, world_m);
+
+		//cmd_buf.get_handle().pushConstants<glm::mat4>(pl_layout, vk::ShaderStageFlagBits::eVertex, 0, world_m * world_m_rotate);
+
+		draw_submesh(cmd_buf, *baked_pbr_.p_box);
+	}
 }
 
 void Renderer::draw_scene(CommandBuffer &cmd_buf)

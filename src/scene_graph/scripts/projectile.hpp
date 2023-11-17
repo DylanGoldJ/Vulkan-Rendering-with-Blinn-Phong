@@ -12,13 +12,14 @@ class Projectile : public Script
 	std::unordered_map<KeyCode, bool> key_pressed_;
 	glm::vec3                         location; // current location
 	glm::vec3                         rotation; // current rotation (for spinning)
-	float                            angle; // current angle (for spinning)
+	float							  angle; // current angle (for spinning)
 	glm::vec3                         start_location; // location to return to after reset
 	int                               id;
 	bool                              in_motion; // bool for has the bullet been fired and in motion
 	Timer                             timer_; // timer to track bullet airtime
-	glm::vec3                         distance_to_camera; // transformation to apply to follow the camera
-	glm::vec3                         location_behind_camera; // location behind camera, so it may return after been fired
+	glm::vec3                         camera_location; // transformation to apply to follow the camera
+	bool                              should_render = false;
+
 
   public:
 	static const float TRANSLATION_MOVE_STEP;
@@ -55,6 +56,8 @@ class Projectile : public Script
 
 	float getAngle();
 
-	void setDistanceToCamera(glm::vec3 *num);
+	void setDistanceToCamera(glm::vec3 num);
+
+	bool get_render();
 };
 }
