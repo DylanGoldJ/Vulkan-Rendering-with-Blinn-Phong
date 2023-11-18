@@ -106,4 +106,8 @@ bool Node::get_rotate()
 {
 	return should_rotate;
 }
+void Node::reset_rotate()
+{
+	T_.set_rotation(glm::quat(1.0, 0.0, 0.0, 0.0));
+}
 }	// namespace W3D::sg

@@ -121,6 +121,7 @@ class Node
 
 	bool get_rotate();
 	void set_rotate(bool val);
+	void reset_rotate();
 };	// class Node
 
 }	// namespace W3D::sg

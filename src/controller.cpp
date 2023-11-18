@@ -86,7 +86,11 @@ void Controller::reset_locations(const Event &event)
 	player_5.set_render(false);
 
 	//Reset the rotation of a player
-
+	player_1.reset_rotate();
+	player_2.reset_rotate();
+	player_3.reset_rotate();
+	player_4.reset_rotate();
+	player_5.reset_rotate();
 }
 
 void Controller::switch_mode(KeyCode code)
