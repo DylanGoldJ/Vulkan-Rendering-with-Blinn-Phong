@@ -27,7 +27,7 @@ enum class ControllerMode
 	eLight2,
 	eLight3,
 	eLight4,
-	eProjectile1
+	eProjectile1,
 	eCreatePlayer
 };
 

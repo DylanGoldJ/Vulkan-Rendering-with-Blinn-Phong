@@ -56,9 +56,9 @@ void W3D::sg::Projectile::update(float delta_time)
 	if (in_motion)
 	{
 		// Move in a straight line away from camera
-		delta_translation.z -= TRANSLATION_MOVE_STEP;
+		//delta_translation.z -= TRANSLATION_MOVE_STEP;
 
-		//delta_translation += (glm::vec3(TRANSLATION_MOVE_STEP, TRANSLATION_MOVE_STEP, TRANSLATION_MOVE_STEP) * camera_rotation * 0.1f);
+		delta_translation += (glm::vec3(TRANSLATION_MOVE_STEP, TRANSLATION_MOVE_STEP, TRANSLATION_MOVE_STEP) * camera_rotation * 0.1f);
 	}
 	// Update rotation
 	delta_rotation.x += ROTATION_MOVE_WEIGHT;
