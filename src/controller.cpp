@@ -84,6 +84,9 @@ void Controller::reset_locations(const Event &event)
 	player_3.set_render(false);
 	player_4.set_render(false);
 	player_5.set_render(false);
+
+	//Reset the rotation of a player
+
 }
 
 void Controller::switch_mode(KeyCode code)
@@ -147,25 +150,31 @@ void Controller::deliver_event(const Event &event)
 	// NOTIFY THE ASSOCIATED SCRIPT FOR THE GAME OBJECT SO IT CAN PROVIDE
 	// A FURTHER REPONSE. FIRST GET THE ASSOCIATED SCRIPT
 	sg::Script *p_script;
+	set_players_rotate_false();
 	if (mode_ == ControllerMode::ePlayer1)
 	{
 		p_script = &player_1.get_component<sg::Script>();
+		player_1.set_rotate(true);
 	}
 	else if (mode_ == ControllerMode::ePlayer2)
 	{
 		p_script = &player_2.get_component<sg::Script>();
+		player_2.set_rotate(true);
 	}
 	else if (mode_ == ControllerMode::ePlayer3)
 	{
 		p_script = &player_3.get_component<sg::Script>();
+		player_3.set_rotate(true);
 	}
 	else if (mode_ == ControllerMode::ePlayer4)
 	{
 		p_script = &player_4.get_component<sg::Script>();
+		player_4.set_rotate(true);
 	}
 	else if (mode_ == ControllerMode::ePlayer5)
 	{
 		p_script = &player_5.get_component<sg::Script>();
+		player_5.set_rotate(true);
 	}
 	else if (mode_ == ControllerMode::eLight1)
 	{
@@ -241,6 +250,15 @@ bool Controller::are_players_colliding()
 
 	// NOTE THIS AABB FUNCTION DOES THE ACTUAL COLLISION TEST
 	return p1_transformed_bd.collides_with(p2_transformed_bd);
+}
+void Controller::set_players_rotate_false()
+{
+	player_1.set_rotate(false);
+	player_2.set_rotate(false);
+	player_3.set_rotate(false);
+	player_4.set_rotate(false);
+	player_5.set_rotate(false);
+
 }
 
 }        // namespace W3D

@@ -108,6 +108,8 @@ class Controller
 		It does this by just duplicating the player1 object to keep it simple with a slight translation.
 	*/
 
+	void set_players_rotate_false();
+
 };	// class Controller
 
 }	// namespace W3D

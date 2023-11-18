@@ -97,5 +97,13 @@ void Node::set_name(std::string new_name)
 {
 	name_ = new_name;
 }
+void Node::set_rotate(bool val)
+{
+	should_rotate = val;
+}
 
+bool Node::get_rotate()
+{
+	return should_rotate;
+}
 }	// namespace W3D::sg

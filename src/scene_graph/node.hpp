@@ -26,6 +26,7 @@ class Node
 	std::vector<Node *>                              children_;			// CHILD NODES FOR THIS NODE
 	std::unordered_map<std::type_index, Component *> components_;		// COMPONENT ASSOCIATED WITH THIS NODE
 	bool                                             should_render = true; //Added to determine if a node should be rendered, default true
+	bool                                             should_rotate = false;
 
   public:
 	/*
@@ -118,6 +119,8 @@ class Node
 
 	void set_name(std::string new_name);
 
+	bool get_rotate();
+	void set_rotate(bool val);
 };	// class Node
 
 }	// namespace W3D::sg

@@ -58,8 +58,32 @@ void Player::update(float delta_time)
 	{
 		T.set_tranlsation(T.get_translation() + delta_translation);
 	}
+	
+	
+// Assuming T is your transformation object
+	if (get_node().get_rotate())
+	{
+		glm::quat cur = T.get_rotation();
+
+		// Define an axis of rotation (y-axis in this case)
+		glm::vec3 rotationAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+
+		// Define the angle of rotation
+		float rotationAngle = 0.0001f;        // Adjust the angle as needed
+
+		// Create a quaternion for the rotation
+		glm::quat rotationQuat = glm::angleAxis(rotationAngle, rotationAxis);
+
+		// Combine the current rotation with the new rotation
+		T.set_rotation(cur * rotationQuat);
+	}
 }
 
+//void Player::reset_rotation()
+//{
+//	auto &T = get_node().get_transform();
+//	T.set_rotation(glm::quat(0.0f, 0.0f, 0.0f, 1.0f));
+//}
 
 void Player::process_event(const Event &event)
 {
